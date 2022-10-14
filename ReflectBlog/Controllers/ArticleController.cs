@@ -46,6 +46,7 @@ namespace ReflectBlog.Controllers
 
             var articles = await _dbContext.Articles.Include(x => x.Category).Include(x => x.User)
                                                     .WhereIf(!string.IsNullOrEmpty(search), searchCondition)
+                                                    .OrderBy(x => x.Id)
                                                     .Skip((page - 1) * pageSize).Take(pageSize)
                                                    .ToListAsync();
 
