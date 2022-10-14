@@ -81,7 +81,7 @@ namespace Blog.UnitTests.ControllerTests
                     Salt = Faker.Lorem.Words(1).First(),
                     Password = Faker.Lorem.Words(1).First(),
                     Email = Faker.Internet.Email(),
-                    Role = Faker.Name.First(),
+                    Role = "Administrator",
                     GivenName = Faker.Lorem.Words(1).First() + search + Faker.Lorem.Words(1).First(),
                     FamilyName = Faker.Name.Last()
                 },
@@ -91,7 +91,7 @@ namespace Blog.UnitTests.ControllerTests
                     Salt = Faker.Lorem.Words(1).First(),
                     Password = Faker.Lorem.Words(1).First(),
                     Email = Faker.Internet.Email(),
-                    Role = Faker.Name.First(),
+                    Role = "Administrator",
                     GivenName = search + " " + Faker.Lorem.Words(1).First(),
                     FamilyName = Faker.Name.Last()
                 },
@@ -101,7 +101,7 @@ namespace Blog.UnitTests.ControllerTests
                     Salt = Faker.Lorem.Words(1).First(),
                     Password = Faker.Lorem.Words(1).First(),
                     Email = Faker.Internet.Email(),
-                    Role = Faker.Name.First(),
+                    Role = "Administrator",
                     GivenName =  Faker.Lorem.Words(2).First() + " " + search,
                     FamilyName = Faker.Name.Last()
                 }
@@ -262,7 +262,7 @@ namespace Blog.UnitTests.ControllerTests
                 //Salt = Faker.Lorem.Words(1).First(),
                 Password = Faker.Lorem.Words(1).First(),
                 Email = Faker.Internet.Email(),
-                //Role = Faker.Name.First(),
+                //Role = "Administrator",
                 GivenName = Faker.Lorem.Words(1).First(),
                 FamilyName = Faker.Name.Last()
             };
@@ -407,200 +407,5 @@ namespace Blog.UnitTests.ControllerTests
             // Assert
             Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }
-
-
-        #region Private Methods
-
-        //private void Seed()
-        //{
-
-        //    List<User> users = new List<User>()
-        //    {
-        //        new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },
-
-        //        new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },
-        //        new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },                new User
-        //        {
-        //            Username = Faker.Name.First(),
-        //            Salt = Faker.Lorem.Words(1).First(),
-        //            Password = Faker.Lorem.Words(1).First(),
-        //            Email = Faker.Internet.Email(),
-        //            Role = Faker.Name.First(),
-        //            GivenName = Faker.Name.First(),
-        //            FamilyName = Faker.Name.Last()
-        //        },
-        //    };
-
-        //    dbContext.Users.AddRange(users);
-        //    dbContext.SaveChanges();
-
-        //}
-
-
-
-        #endregion
-
     }
 }
