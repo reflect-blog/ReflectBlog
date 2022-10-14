@@ -41,7 +41,7 @@ namespace Blog.UnitTests.ControllerTests
 
             // Seed with test data
             MockData.Data.Seed(dbContext);
-            
+
         }
 
         [Theory]

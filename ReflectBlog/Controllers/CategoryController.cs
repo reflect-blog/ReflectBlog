@@ -58,6 +58,7 @@ namespace ReflectBlog.Controllers
             return Ok(category);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost("PostCategory")]
         public async Task<IActionResult> PostCategory(CategoryModel categoryModel)
         {
@@ -79,6 +80,7 @@ namespace ReflectBlog.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("UpdateCategory")]
         public async Task<IActionResult> UpdateCategory(Category categoryModel)
         {
@@ -88,6 +90,7 @@ namespace ReflectBlog.Controllers
             return Ok(categoryToUpdate.Entity);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([Required] int id)
         {

@@ -29,11 +29,9 @@ namespace ReflectBlog.Controllers
         }
 
         [HttpGet("GetUsers")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
         {
-
-            var currentUser = GetCurrentUser();
-
             Expression<Func<User, bool>> searchCondition = x => x.GivenName.Contains(search) || x.FamilyName.Contains(search) || x.Email.Contains(search);
 
             var users = await _dbContext.Users.WhereIf(!string.IsNullOrEmpty(search), searchCondition)
@@ -69,7 +67,8 @@ namespace ReflectBlog.Controllers
         {
             try
             {
-                var currentUser = GetCurrentUser();
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var currentUser = HelperMethods.GetCurrentUser(identity);
 
                 var user = new User
                 {
@@ -87,7 +86,7 @@ namespace ReflectBlog.Controllers
 
                 return Ok(userToAdd.Entity);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //return BadRequest(ex.Message);
                 return BadRequest();
@@ -97,6 +96,12 @@ namespace ReflectBlog.Controllers
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User userModel)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
+
+            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != userModel.Id.ToString() && identity.Claims.FirstOrDefault(x => x.Type == "Role").Value != "Administrator")
+                return Unauthorized();
+
             var userToUpdate = _dbContext.Update(userModel);
             await _dbContext.SaveChangesAsync();
 
@@ -106,6 +111,11 @@ namespace ReflectBlog.Controllers
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser([Required] int id)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
+
+            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != id.ToString() && identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value != "Administrator")
+                return Unauthorized();
             var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (userToDelete == null)
@@ -121,51 +131,54 @@ namespace ReflectBlog.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult AdminsEndpoint()
         {
-            var currentUser = GetCurrentUser();
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
 
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
 
-        [HttpGet("Editors")]
-        [Authorize(Roles = "Editor")]
-        public IActionResult EditorsEndpoint()
+        [HttpGet("Authors")]
+        [Authorize(Roles = "Author")]
+        public IActionResult AuthorsEndpoint()
         {
-            var currentUser = GetCurrentUser();
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
 
             return Ok($"Hi {currentUser.GivenName}, you are a {currentUser.Role}");
         }
 
-        [HttpGet("AdminsAndEditors")]
-        [Authorize(Roles = "Administrator,Editor")]
-        public IActionResult AdminsAndEditorsEndpoint()
+        [HttpGet("AdminsAndAuthors")]
+        [Authorize(Roles = "Administrator,Author")]
+        public IActionResult AdminsAndAuthorsEndpoint()
         {
-            var currentUser = GetCurrentUser();
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
 
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
-        private User GetCurrentUser()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
+        //private User GetCurrentUser()
+        //{
+        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            if (identity != null)
-            {
-                var userClaims = identity.Claims;
-                int.TryParse(userClaims.FirstOrDefault(o => o.Type == "UserId")?.Value, out int userId);
+        //    if (identity != null)
+        //    {
+        //        var userClaims = identity.Claims;
+        //        int.TryParse(userClaims.FirstOrDefault(o => o.Type == "UserId")?.Value, out int userId);
 
-                return new User
-                {
-                    Id = userId,
-                    Username = userClaims.FirstOrDefault(o => o.Type == "UserName")?.Value,
-                    Email = userClaims.FirstOrDefault(o => o.Type == "Email")?.Value,
-                    GivenName = userClaims.FirstOrDefault(o => o.Type == "GivenName")?.Value,
-                    FamilyName = userClaims.FirstOrDefault(o => o.Type == "FamilyName")?.Value,
-                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
-                };
-            }
-            return null;
-        }
+        //        return new User
+        //        {
+        //            Id = userId,
+        //            Username = userClaims.FirstOrDefault(o => o.Type == "UserName")?.Value,
+        //            Email = userClaims.FirstOrDefault(o => o.Type == "Email")?.Value,
+        //            GivenName = userClaims.FirstOrDefault(o => o.Type == "GivenName")?.Value,
+        //            FamilyName = userClaims.FirstOrDefault(o => o.Type == "FamilyName")?.Value,
+        //            Role = userClaims.FirstOrDefault(o => o.Type == "Role")?.Value
+        //        };
+        //    }
+        //    return null;
+        //}
 
         //[NonAction]
         //public string CreateMD5(string input)

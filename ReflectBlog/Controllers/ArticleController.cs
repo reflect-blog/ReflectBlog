@@ -17,6 +17,7 @@ using static System.Net.WebRequestMethods;
 using ReflectBlog.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace ReflectBlog.Controllers
 {
@@ -37,11 +38,11 @@ namespace ReflectBlog.Controllers
         public async Task<IActionResult> GetArticles(string search, int page = 1, int pageSize = 10)
         {
             Expression<Func<Article, bool>> searchCondition = x =>
-                                            x.Title.Contains(search) ||
-                                            x.Content.Contains(search) ||
-                                            x.User.Email.Contains(search) ||
-                                            x.User.GivenName.Contains(search) ||
-                                            x.User.FamilyName.Contains(search);
+            x.Title.Contains(search) ||
+            x.Content.Contains(search) ||
+            x.User.Email.Contains(search) ||
+            x.User.GivenName.Contains(search) ||
+            x.User.FamilyName.Contains(search);
 
             var articles = await _dbContext.Articles.Include(x => x.Category).Include(x => x.User)
                                                     .WhereIf(!string.IsNullOrEmpty(search), searchCondition)
@@ -70,6 +71,7 @@ namespace ReflectBlog.Controllers
             return Ok(article);
         }
 
+        [Authorize(Roles = "Administrator,Author")]
         [HttpPost("PostArticleV1")]
         public async Task<IActionResult> PostArticleV1([FromForm] ArticleModel articleModel)
         {
@@ -99,6 +101,7 @@ namespace ReflectBlog.Controllers
             return Ok(articleToAdd.Entity);
         }
 
+        [Authorize(Roles = "Administrator,Author")]
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
         {
@@ -124,19 +127,34 @@ namespace ReflectBlog.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator,Author")]
         [HttpPut("UpdateArticle")]
         public async Task<IActionResult> UpdateArticle(Article articleModel)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
+
+            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != articleModel.AuthorId.ToString())
+                return BadRequest("You can update only articles created by you!");
+
             var articleToUpdate = _dbContext.Update(articleModel);
             await _dbContext.SaveChangesAsync();
 
             return Ok(articleToUpdate.Entity);
         }
 
+        [Authorize(Roles = "Administrator,Author")]
         [HttpDelete("DeleteArticle")]
         public async Task<IActionResult> DeleteArticle([Required] int id)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
+
             var articleToDelete = await _dbContext.Articles.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != articleToDelete.AuthorId.ToString())
+                return BadRequest("You can delete only articles created by you!");
+
 
             if (articleToDelete == null)
                 return NotFound();
@@ -147,6 +165,7 @@ namespace ReflectBlog.Controllers
             return Ok("Deleted Article!");
         }
 
+        [Authorize(Roles = "Administrator,Author")]
         [HttpPost("UploadImage")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
