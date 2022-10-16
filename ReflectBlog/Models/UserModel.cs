@@ -4,6 +4,9 @@ namespace ReflectBlog.Models
 {
     public class UserModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Username { get; set; }
         [Required]
         public string Password { get; set; }
@@ -14,5 +17,6 @@ namespace ReflectBlog.Models
         public string GivenName { get; set; }
         [Required]
         public string FamilyName { get; set; }
+
     }
 }

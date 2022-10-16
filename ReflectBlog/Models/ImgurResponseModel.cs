@@ -2,6 +2,9 @@
 
 namespace ReflectBlog.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ImgurResponseModel
     {
         public int Status { get; set; }
@@ -11,6 +14,10 @@ namespace ReflectBlog.Models
 
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class ImgurImage
     {
         [JsonProperty("id")]

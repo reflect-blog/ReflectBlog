@@ -12,6 +12,10 @@ namespace ReflectBlog.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<Category> Categories => Set<Category>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.ApplyConfiguration(new UserConfiguration());

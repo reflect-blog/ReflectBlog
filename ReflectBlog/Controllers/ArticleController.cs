@@ -33,6 +33,15 @@ namespace ReflectBlog.Controllers
             _dbContext = dbContext;
         }
 
+
+        /// <summary>
+        /// Endpoint to get the paginated data for articles
+        /// </summary>
+        /// <param name="search">keyword based on which the search will be done</param>
+        /// <param name="page">page number</param>
+        /// <param name="pageSize">number of items per page</param>
+        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetArticles")]
         public async Task<IActionResult> GetArticles(string search, int page = 1, int pageSize = 10)
         {
@@ -59,6 +68,12 @@ namespace ReflectBlog.Controllers
             return Ok(articlesPaged);
         }
 
+        /// <summary>
+        /// Endpoint to get article by ID
+        /// </summary>
+        /// <param name="id">article ID</param>
+        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetArticle")]
         public async Task<IActionResult> GetArticle([Required] int id)
         {
@@ -70,6 +85,11 @@ namespace ReflectBlog.Controllers
             return Ok(article);
         }
 
+        /// <summary>
+        /// Endpoint to post an article from "FromForm"
+        /// </summary>
+        /// <param name="articleModel"></param>
+        /// <returns></returns>
         [HttpPost("PostArticleV1")]
         public async Task<IActionResult> PostArticleV1([FromForm] ArticleModel articleModel)
         {
@@ -99,6 +119,11 @@ namespace ReflectBlog.Controllers
             return Ok(articleToAdd.Entity);
         }
 
+        /// <summary>
+        /// Endpoint to post an article from "Body"
+        /// </summary>
+        /// <param name="articleModel"></param>
+        /// <returns></returns>
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
         {
@@ -124,6 +149,11 @@ namespace ReflectBlog.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint to update an article
+        /// </summary>
+        /// <param name="articleModel"></param>
+        /// <returns></returns>
         [HttpPut("UpdateArticle")]
         public async Task<IActionResult> UpdateArticle(Article articleModel)
         {
@@ -133,6 +163,11 @@ namespace ReflectBlog.Controllers
             return Ok(articleToUpdate.Entity);
         }
 
+        /// <summary>
+        /// Endpoint to delete an article
+        /// </summary>
+        /// <param name="id">article id</param>
+        /// <returns></returns>
         [HttpDelete("DeleteArticle")]
         public async Task<IActionResult> DeleteArticle([Required] int id)
         {
@@ -147,6 +182,11 @@ namespace ReflectBlog.Controllers
             return Ok("Deleted Article!");
         }
 
+        /// <summary>
+        /// Endpoint to Upload an Image in Imgur
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         [HttpPost("UploadImage")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {

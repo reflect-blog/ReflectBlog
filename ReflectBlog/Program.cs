@@ -23,6 +23,7 @@ var connString = configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(connString));
 
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -52,7 +53,7 @@ var app = builder.Build();
     //app.UseDeveloperExceptionPage();
 //}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

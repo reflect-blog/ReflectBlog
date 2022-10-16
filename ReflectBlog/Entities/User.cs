@@ -5,6 +5,9 @@ namespace ReflectBlog.Entities
 {
     public class User
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int Id { get; set; }
         [Required]
         public string Username { get; set; }

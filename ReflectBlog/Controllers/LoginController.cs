@@ -29,6 +29,11 @@ namespace ReflectBlog.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody] UserLogin userLogin)
@@ -44,6 +49,11 @@ namespace ReflectBlog.Controllers
             return NotFound("User not found");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private string Generate(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -68,6 +78,11 @@ namespace ReflectBlog.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         private User Authenticate(UserLogin userLogin)
         {
 

@@ -6,6 +6,9 @@ namespace ReflectBlog.Entities
 {
     public class Article
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int Id { get; set; }
 
         [Required]
