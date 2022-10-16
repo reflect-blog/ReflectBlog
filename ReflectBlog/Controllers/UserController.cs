@@ -117,10 +117,19 @@ namespace ReflectBlog.Controllers
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User userModel)
         {
-            var userToUpdate = _dbContext.Update(userModel);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                var userToUpdate = _dbContext.Update(userModel);
+                await _dbContext.SaveChangesAsync();
 
-            return Ok(userToUpdate.Entity);
+                return Ok(userToUpdate.Entity);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+             
         }
 
         /// <summary>

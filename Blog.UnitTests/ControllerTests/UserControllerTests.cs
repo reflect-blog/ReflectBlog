@@ -406,5 +406,43 @@ namespace Blog.UnitTests.ControllerTests
             Assert.Equal(userToUpdate.FamilyName, actualUser.FamilyName);
         }
 
+        [Fact]
+        public async Task UpdateUser_NullParameter_ShouldReturnBadRequest()
+        { 
+            // Arrange
+            // We prepare the data that we will need to act on the test
+            var userController = new UserController(dbContext);
+
+            var id = await dbContext.Users.MaxAsync(x => x.Id);
+
+            var user = await dbContext.Users.FirstOrDefaultAsync();
+
+            var claims = new List<Claim>()
+                {
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserName", user.Username.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                    new Claim("GivenName", user.GivenName.ToString()),
+                    new Claim("FamilyName", user.FamilyName.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            userController.ControllerContext = new ControllerContext();
+            userController.ControllerContext.HttpContext = new DefaultHttpContext();
+            userController.ControllerContext.HttpContext.User = claimsPrincipal;
+
+            // Act
+            var result = await userController.UpdateUser(null);
+            var objectRes = result as BadRequestResult;
+
+            // Assert
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectRes.StatusCode);
+            //Assert.Null(objectRes.Value);
+        }
+
     }
 }
