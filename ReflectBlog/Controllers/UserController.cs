@@ -28,6 +28,13 @@ namespace ReflectBlog.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("GetUsers")]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
@@ -50,6 +57,11 @@ namespace ReflectBlog.Controllers
             return Ok(UsersPaged);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser([Required] int id)
         {
@@ -61,6 +73,11 @@ namespace ReflectBlog.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser(UserModel userModel)
@@ -76,7 +93,8 @@ namespace ReflectBlog.Controllers
                     Email = userModel.Email,
                     Password = userModel.Password,
                     GivenName = userModel.GivenName,
-                    FamilyName = userModel.FamilyName
+                    FamilyName = userModel.FamilyName,
+                    Role = "User"
                 };
 
                 user.Salt = Guid.NewGuid().ToString();
@@ -93,6 +111,11 @@ namespace ReflectBlog.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User userModel)
         {
@@ -108,6 +131,11 @@ namespace ReflectBlog.Controllers
             return Ok(userToUpdate.Entity);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser([Required] int id)
         {
@@ -127,6 +155,10 @@ namespace ReflectBlog.Controllers
             return Ok("Deleted User!");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Admins")]
         [Authorize(Roles = "Administrator")]
         public IActionResult AdminsEndpoint()
@@ -137,10 +169,13 @@ namespace ReflectBlog.Controllers
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Authors")]
         [Authorize(Roles = "Author")]
-        public IActionResult AuthorsEndpoint()
+        public IActionResult EditorsEndpoint()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);

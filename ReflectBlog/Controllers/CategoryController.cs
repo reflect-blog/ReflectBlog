@@ -26,6 +26,13 @@ namespace ReflectBlog.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("GetCategories")]
         public async Task<IActionResult> GetCategories(string search, int page = 1, int pageSize = 10)
         {
@@ -47,6 +54,11 @@ namespace ReflectBlog.Controllers
             return Ok(categoriesPaged);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("GetCategory")]
         public async Task<IActionResult> GetCategory([Required] int id)
         {
@@ -58,6 +70,11 @@ namespace ReflectBlog.Controllers
             return Ok(category);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="categoryModel"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Administrator")]
         [HttpPost("PostCategory")]
         public async Task<IActionResult> PostCategory(CategoryModel categoryModel)
@@ -79,6 +96,12 @@ namespace ReflectBlog.Controllers
                 return BadRequest();
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="categoryModel"></param>
+        /// <returns></returns>
 
         [Authorize(Roles = "Administrator")]
         [HttpPut("UpdateCategory")]
@@ -90,6 +113,11 @@ namespace ReflectBlog.Controllers
             return Ok(categoryToUpdate.Entity);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Administrator")]
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([Required] int id)
