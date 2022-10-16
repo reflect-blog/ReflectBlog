@@ -11,7 +11,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace ReflectBlog.Controllers
@@ -29,12 +28,12 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to get paginated data for users
         /// </summary>
-        /// <param name="search"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        /// <param name="search">Search keyword</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <returns>Users Paginated</returns>
         [HttpGet("GetUsers")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
         {
@@ -57,10 +56,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to get user by id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Id of user to get</param>
+        /// <returns>User if found</returns>
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser([Required] int id)
         {
@@ -73,10 +72,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to create a new user
         /// </summary>
-        /// <param name="userModel"></param>
-        /// <returns></returns>
+        /// <param name="userModel">Model with parameters required to create an user</param>
+        /// <returns>Newly created user</returns>
         [AllowAnonymous]
         [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser(UserModel userModel)
@@ -110,10 +109,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Method to update an user 
         /// </summary>
-        /// <param name="userModel"></param>
-        /// <returns></returns>
+        /// <param name="userModel">Model with parameters required to update an user</param>
+        /// <returns>Updated User</returns>
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User userModel)
         {
@@ -133,10 +132,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Method to delete a user based on id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Id of user to be deleted</param>
+        /// <returns>Deleted confirmation</returns>
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser([Required] int id)
         {
@@ -151,49 +150,11 @@ namespace ReflectBlog.Controllers
             return Ok("Deleted User!");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Admins")]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult AdminsEndpoint()
-        {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
-        }
 
         /// <summary>
-        /// 
+        /// Method to return current(authenticated) user data
         /// </summary>
-        /// <returns></returns>
-        [HttpGet("Editors")]
-        [Authorize(Roles = "Editor")]
-        public IActionResult EditorsEndpoint()
-        {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are a {currentUser.Role}");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("AdminsAndEditors")]
-        [Authorize(Roles = "Administrator,Editor")]
-        public IActionResult AdminsAndEditorsEndpoint()
-        {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>Current User Data</returns>
         private User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -216,16 +177,5 @@ namespace ReflectBlog.Controllers
             return null;
         }
 
-        //[NonAction]
-        //public string CreateMD5(string input)
-        //{
-        //    using (MD5 md5 = MD5.Create())
-        //    {
-        //        byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-        //        byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-        //        return Convert.ToHexString(hashBytes).ToLower();
-        //    }
-        //}
     }
 }
