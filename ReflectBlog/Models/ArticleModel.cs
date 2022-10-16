@@ -18,6 +18,6 @@ namespace ReflectBlog.Models
         public DateTime Date { get; set; } = DateTime.Now;
         public int? AuthorId { get; set; }
         public int? CategoryId { get; set; }
-        public IFormFile? Image { get; set; }
+        public string Image { get; set; }
     }
 }

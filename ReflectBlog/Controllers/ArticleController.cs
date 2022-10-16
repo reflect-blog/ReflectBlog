@@ -90,34 +90,34 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="articleModel"></param>
         /// <returns></returns>
-        [HttpPost("PostArticleV1")]
-        public async Task<IActionResult> PostArticleV1([FromForm] ArticleModel articleModel)
-        {
-            var article = new Article
-            {
-                Title = articleModel.Title,
-                Content = articleModel.Content,
-                Date = articleModel.Date,
-                AuthorId = articleModel.AuthorId,
-                CategoryId = articleModel.CategoryId
-            };
+        //[HttpPost("PostArticleV1")]
+        //public async Task<IActionResult> PostArticleV1([FromForm] ArticleModel articleModel)
+        //{
+        //    var article = new Article
+        //    {
+        //        Title = articleModel.Title,
+        //        Content = articleModel.Content,
+        //        Date = articleModel.Date,
+        //        AuthorId = articleModel.AuthorId,
+        //        CategoryId = articleModel.CategoryId
+        //    };
 
-            var extension = Path.GetExtension(articleModel.Image.FileName);
+        //    var extension = Path.GetExtension(articleModel.Image.FileName);
 
-            if (extension != ".png")
-            {
-                return BadRequest("Only png files are accepted.");
-            }
+        //    if (extension != ".png")
+        //    {
+        //        return BadRequest("Only png files are accepted.");
+        //    }
 
-            var imgurResponseLink = await HelperMethods.ImgurImageUpload(articleModel.Image);
+        //    var imgurResponseLink = await HelperMethods.ImgurImageUpload(articleModel.Image);
 
-            article.ImageUrl = imgurResponseLink;
+        //    article.ImageUrl = imgurResponseLink;
 
-            var articleToAdd = await _dbContext.AddAsync(articleModel);
-            await _dbContext.SaveChangesAsync();
+        //    var articleToAdd = await _dbContext.AddAsync(articleModel);
+        //    await _dbContext.SaveChangesAsync();
 
-            return Ok(articleToAdd.Entity);
-        }
+        //    return Ok(articleToAdd.Entity);
+        //}
 
         /// <summary>
         /// Endpoint to post an article from "Body"
@@ -188,7 +188,7 @@ namespace ReflectBlog.Controllers
         /// <param name="image"></param>
         /// <returns></returns>
         [HttpPost("UploadImage")]
-        public async Task<IActionResult> UploadImage(IFormFile image)
+        public async Task<IActionResult> UploadImage([FromForm]IFormFile image)
         {
             var extension = Path.GetExtension(image.FileName);
 
