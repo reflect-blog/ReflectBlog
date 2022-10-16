@@ -11,7 +11,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace ReflectBlog.Controllers
@@ -117,12 +116,12 @@ namespace ReflectBlog.Controllers
         /// <param name="userModel"></param>
         /// <returns></returns>
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(User userModel)
+        public async Task<IActionResult> UpdateUser(User userModel) 
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
 
-            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != userModel.Id.ToString() && identity.Claims.FirstOrDefault(x => x.Type == "Role").Value != "Administrator")
+            if (currentUser.Id != userModel.Id && currentUser.Role != "Administrator")
                 return Unauthorized();
 
             var userToUpdate = _dbContext.Update(userModel);
@@ -142,7 +141,7 @@ namespace ReflectBlog.Controllers
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
 
-            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != id.ToString() && identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value != "Administrator")
+            if (currentUser.Id != id && currentUser.Role != "Administrator")
                 return Unauthorized();
             var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -169,13 +168,9 @@ namespace ReflectBlog.Controllers
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("Authors")]
         [Authorize(Roles = "Author")]
-        public IActionResult EditorsEndpoint()
+        public IActionResult AuthorsEndpoint()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
@@ -193,38 +188,6 @@ namespace ReflectBlog.Controllers
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
-        //private User GetCurrentUser()
-        //{
-        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-        //    if (identity != null)
-        //    {
-        //        var userClaims = identity.Claims;
-        //        int.TryParse(userClaims.FirstOrDefault(o => o.Type == "UserId")?.Value, out int userId);
-
-        //        return new User
-        //        {
-        //            Id = userId,
-        //            Username = userClaims.FirstOrDefault(o => o.Type == "UserName")?.Value,
-        //            Email = userClaims.FirstOrDefault(o => o.Type == "Email")?.Value,
-        //            GivenName = userClaims.FirstOrDefault(o => o.Type == "GivenName")?.Value,
-        //            FamilyName = userClaims.FirstOrDefault(o => o.Type == "FamilyName")?.Value,
-        //            Role = userClaims.FirstOrDefault(o => o.Type == "Role")?.Value
-        //        };
-        //    }
-        //    return null;
-        //}
-
-        //[NonAction]
-        //public string CreateMD5(string input)
-        //{
-        //    using (MD5 md5 = MD5.Create())
-        //    {
-        //        byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-        //        byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-        //        return Convert.ToHexString(hashBytes).ToLower();
-        //    }
-        //}
     }
 }

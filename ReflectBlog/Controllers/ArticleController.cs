@@ -9,13 +9,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using static System.Net.WebRequestMethods;
 using ReflectBlog.Helpers;
-using static System.Net.Mime.MediaTypeNames;
 using System.Linq.Expressions;
 using System.Security.Claims;
 
@@ -49,9 +45,9 @@ namespace ReflectBlog.Controllers
             Expression<Func<Article, bool>> searchCondition = x =>
             x.Title.Contains(search) ||
             x.Content.Contains(search) ||
-            x.User.Email.Contains(search) ||
             x.User.GivenName.Contains(search) ||
-            x.User.FamilyName.Contains(search);
+            x.User.FamilyName.Contains(search) ||
+            x.Category.Name.Contains(search);
 
             var articles = await _dbContext.Articles.Include(x => x.Category).Include(x => x.User)
                                                     .WhereIf(!string.IsNullOrEmpty(search), searchCondition)
@@ -130,6 +126,9 @@ namespace ReflectBlog.Controllers
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var currentUser = HelperMethods.GetCurrentUser(identity);
+
             try
             {
                 var article = new Article
@@ -137,7 +136,7 @@ namespace ReflectBlog.Controllers
                     Title = articleModel.Title,
                     Content = articleModel.Content,
                     Date = articleModel.Date,
-                    AuthorId = articleModel.AuthorId,
+                    AuthorId = currentUser.Id,
                     CategoryId = articleModel.CategoryId
                 };
 
@@ -164,7 +163,7 @@ namespace ReflectBlog.Controllers
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
 
-            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != articleModel.AuthorId.ToString())
+            if (currentUser.Id != articleModel.AuthorId)
                 return BadRequest("You can update only articles created by you!");
 
             var articleToUpdate = _dbContext.Update(articleModel);
@@ -187,12 +186,11 @@ namespace ReflectBlog.Controllers
 
             var articleToDelete = await _dbContext.Articles.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value != articleToDelete.AuthorId.ToString())
-                return BadRequest("You can delete only articles created by you!");
-
-
             if (articleToDelete == null)
                 return NotFound();
+
+            if (currentUser.Id != articleToDelete.AuthorId)
+                return BadRequest("You can delete only articles created by you!");
 
             _dbContext.Remove(articleToDelete);
             await _dbContext.SaveChangesAsync();

@@ -10,7 +10,6 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace ReflectBlog.Controllers
@@ -66,7 +65,7 @@ namespace ReflectBlog.Controllers
                 new Claim("Email", user.Email),
                 new Claim("GivenName", user.GivenName),
                 new Claim("FamilyName", user.FamilyName),
-                new Claim("Role", user.Role)
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],

@@ -4,23 +4,13 @@ using ReflectBlog.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Moq;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Web;
 using System.Net;
 using ReflectBlog.Models;
-using Xunit.Sdk;
-using System.Diagnostics.Contracts;
-using System.Threading;
 
 namespace Blog.UnitTests.ControllerTests
 {

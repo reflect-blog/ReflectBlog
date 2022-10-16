@@ -1,8 +1,5 @@
-﻿using ReflectBlog.Entities;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 
 namespace ReflectBlog.Models
 {
