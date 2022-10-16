@@ -38,9 +38,6 @@ namespace ReflectBlog.Controllers
         [HttpGet("GetUsers")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
         {
-
-            var currentUser = GetCurrentUser();
-
             Expression<Func<User, bool>> searchCondition = x => x.GivenName.Contains(search) || x.FamilyName.Contains(search) || x.Email.Contains(search);
 
             var users = await _dbContext.Users.WhereIf(!string.IsNullOrEmpty(search), searchCondition)
@@ -48,7 +45,7 @@ namespace ReflectBlog.Controllers
                                                    .Skip((page - 1) * pageSize).Take(pageSize)
                                                    .ToListAsync();
 
-            var UsersPaged = new PagedInfo<User>
+            var usersPaged = new PagedInfo<User>
             {
                 Data = users,
                 TotalCount = await _dbContext.Users.CountAsync(),
@@ -56,7 +53,7 @@ namespace ReflectBlog.Controllers
                 Page = page
             };
 
-            return Ok(UsersPaged);
+            return Ok(usersPaged);
         }
 
         /// <summary>
