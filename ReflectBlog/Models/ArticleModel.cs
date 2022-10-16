@@ -5,9 +5,6 @@ namespace ReflectBlog.Models
 {
     public class ArticleModel
     {
-        /// <summary>
-        /// 
-        /// </summary>
         [Required]
         public string Title { get; set; }
         [Required]
