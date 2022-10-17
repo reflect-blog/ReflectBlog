@@ -16,7 +16,7 @@ namespace ReflectBlog.Controllers
     [ApiController]
     [Produces("application/json", "application/problem+json")]
     [Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly BlogDbContext _dbContext;
