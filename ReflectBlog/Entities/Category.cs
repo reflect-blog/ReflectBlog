@@ -5,9 +5,6 @@ namespace ReflectBlog.Entities
 {
     public class Category
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }

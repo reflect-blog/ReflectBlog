@@ -66,6 +66,18 @@ namespace ReflectBlog.Controllers
             return Ok(articlesPaged);
         }
 
+        [AllowAnonymous]
+        [HttpGet("GetArticlesList")]
+
+        public async Task<IActionResult> Get()
+        {
+
+            var articles = await _dbContext.Articles.ToListAsync();
+            var users = await _dbContext.Users.ToListAsync();
+            var category = await _dbContext.Categories.ToListAsync();
+            return Ok(articles);
+        }
+
         /// <summary>
         /// Endpoint to get article by ID
         /// </summary>
@@ -76,7 +88,8 @@ namespace ReflectBlog.Controllers
         public async Task<IActionResult> GetArticle([Required] int id)
         {
             var article = await _dbContext.Articles.FirstOrDefaultAsync(x => x.Id == id);
-
+            var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == article.AuthorId);
+            var categories = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == article.CategoryId);
             if (article == null)
                 return NotFound();
 
@@ -137,7 +150,8 @@ namespace ReflectBlog.Controllers
                     Content = articleModel.Content,
                     Date = articleModel.Date,
                     AuthorId = currentUser.Id,
-                    CategoryId = articleModel.CategoryId
+                    CategoryId = articleModel.CategoryId,
+                    ImageUrl = articleModel.Image
                 };
 
                 var articleToAdd = await _dbContext.AddAsync(article);
@@ -178,8 +192,8 @@ namespace ReflectBlog.Controllers
         /// <param name="id">Id of article to be deleted</param>
         /// <returns>Deleted Confirmation</returns>
         [Authorize(Roles = "Administrator,Author")]
-        [HttpDelete("DeleteArticle")]
-        public async Task<IActionResult> DeleteArticle([Required] int id)
+        [HttpDelete("DeleteArticle/{id}")]
+        public async Task<IActionResult> DeleteArticle([FromRoute] int id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
@@ -205,7 +219,7 @@ namespace ReflectBlog.Controllers
         /// <returns>Uploaded image link</returns>
         [Authorize(Roles = "Administrator,Author")]
         [HttpPost("UploadImage")]
-        public async Task<IActionResult> UploadImage([FromForm]IFormFile image)
+        public async Task<IActionResult> UploadImage(IFormFile image)
         {
             var extension = Path.GetExtension(image.FileName);
 

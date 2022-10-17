@@ -55,6 +55,18 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
+        /// Get Categories Endpoint - List
+        /// </summary>
+        /// <returns>List of Categories</returns>
+        [HttpGet("GetcategoriesList")]
+
+        public async Task<IActionResult> Get()
+        {
+            var category = await _dbContext.Categories.ToListAsync();
+            return Ok(category);
+        }
+
+        /// <summary>
         /// Method to get a category based on id
         /// </summary>
         /// <param name="id">Category Id to get</param>
