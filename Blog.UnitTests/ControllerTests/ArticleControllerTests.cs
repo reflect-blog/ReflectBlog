@@ -309,11 +309,11 @@ namespace Blog.UnitTests.ControllerTests
         }
 
         [Fact]
-        public async Task DeleteArticle_ExistingUse_ShouldDeleteSuccessfully()
+        public async Task DeleteArticle_ExistingArticle_ShouldDeleteSuccessfully()
         {
             // Arrange
 
-            var article = dbContext.Articles.FirstOrDefaultAsync();
+            var article = await dbContext.Articles.FirstOrDefaultAsync();
 
             var articleController = new ArticleController(dbContext);
 
