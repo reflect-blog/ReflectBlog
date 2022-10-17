@@ -161,46 +161,5 @@ namespace ReflectBlog.Controllers
 
             return Ok("Deleted User!");
         }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("AdminsAndEditors")]
-        [Authorize(Roles = "Administrator,Editor")]
-        public IActionResult AdminsAndEditorsEndpoint()
-        {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private User GetCurrentUser()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-            if (identity != null)
-            {
-                var userClaims = identity.Claims;
-                int.TryParse(userClaims.FirstOrDefault(o => o.Type == "UserId")?.Value, out int userId);
-
-                return new User
-                {
-                    Id = userId,
-                    Username = userClaims.FirstOrDefault(o => o.Type == "UserName")?.Value,
-                    Email = userClaims.FirstOrDefault(o => o.Type == "Email")?.Value,
-                    GivenName = userClaims.FirstOrDefault(o => o.Type == "GivenName")?.Value,
-                    FamilyName = userClaims.FirstOrDefault(o => o.Type == "FamilyName")?.Value,
-                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
-                };
-            }
-            return null;
-        }
-
     }
 }
