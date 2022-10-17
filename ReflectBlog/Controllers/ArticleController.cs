@@ -70,7 +70,7 @@ namespace ReflectBlog.Controllers
         /// Endpoint to get article by ID
         /// </summary>
         /// <param name="id">article ID</param>
-        /// <returns></returns>
+        /// <returns>Article if found</returns>
         [AllowAnonymous]
         [HttpGet("GetArticle")]
         public async Task<IActionResult> GetArticle([Required] int id)
@@ -120,8 +120,8 @@ namespace ReflectBlog.Controllers
         /// <summary>
         /// Endpoint to post an article from "Body"
         /// </summary>
-        /// <param name="articleModel"></param>
-        /// <returns></returns>
+        /// <param name="articleModel">Model with required parameters to create an Article</param>
+        /// <returns>Newly created Article</returns>
         [Authorize(Roles = "Administrator,Author")]
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
@@ -154,8 +154,8 @@ namespace ReflectBlog.Controllers
         /// <summary>
         /// Endpoint to update an article
         /// </summary>
-        /// <param name="articleModel"></param>
-        /// <returns></returns>
+        /// <param name="articleModel">Model with required parameters to update an Article</param>
+        /// <returns>Updated Article</returns>
         [Authorize(Roles = "Administrator,Author")]
         [HttpPut("UpdateArticle")]
         public async Task<IActionResult> UpdateArticle(Article articleModel)
@@ -175,8 +175,8 @@ namespace ReflectBlog.Controllers
         /// <summary>
         /// Endpoint to delete an article
         /// </summary>
-        /// <param name="id">article id</param>
-        /// <returns></returns>
+        /// <param name="id">Id of article to be deleted</param>
+        /// <returns>Deleted Confirmation</returns>
         [Authorize(Roles = "Administrator,Author")]
         [HttpDelete("DeleteArticle")]
         public async Task<IActionResult> DeleteArticle([Required] int id)
@@ -201,8 +201,8 @@ namespace ReflectBlog.Controllers
         /// <summary>
         /// Endpoint to Upload an Image in Imgur
         /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
+        /// <param name="image">Image to upload</param>
+        /// <returns>Uploaded image link</returns>
         [Authorize(Roles = "Administrator,Author")]
         [HttpPost("UploadImage")]
         public async Task<IActionResult> UploadImage([FromForm]IFormFile image)

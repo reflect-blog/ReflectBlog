@@ -27,12 +27,12 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Method to get existing categories paginated
         /// </summary>
-        /// <param name="search"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        /// <param name="search">Search keyword</param>
+        /// <param name="page">Page number</param>
+        /// <param name="pageSize">Page size</param>
+        /// <returns>Paginated date for categories</returns>
         [HttpGet("GetCategories")]
         public async Task<IActionResult> GetCategories(string search, int page = 1, int pageSize = 10)
         {
@@ -55,10 +55,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Method to get a category based on id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Category Id to get</param>
+        /// <returns>Category</returns>
         [HttpGet("GetCategory")]
         public async Task<IActionResult> GetCategory([Required] int id)
         {
@@ -71,10 +71,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Create new category endpoint
         /// </summary>
-        /// <param name="categoryModel"></param>
-        /// <returns></returns>
+        /// <param name="categoryModel">Model with required parameters for creating a new category</param>
+        /// <returns>Newly created category</returns>
         [Authorize(Roles = "Administrator")]
         [HttpPost("PostCategory")]
         public async Task<IActionResult> PostCategory(CategoryModel categoryModel)
@@ -96,13 +96,12 @@ namespace ReflectBlog.Controllers
                 return BadRequest();
             }
         }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="categoryModel"></param>
-        /// <returns></returns>
 
+        /// <summary>
+        /// Endpoint to update an existing category
+        /// </summary>
+        /// <param name="categoryModel">Model with required parameters for updatng a category</param>
+        /// <returns>Newly updated category</returns>
         [Authorize(Roles = "Administrator")]
         [HttpPut("UpdateCategory")]
         public async Task<IActionResult> UpdateCategory(Category categoryModel)
@@ -114,10 +113,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to delete a category by id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Id of category to be deleted</param>
+        /// <returns>Delete confirmation</returns>
         [Authorize(Roles = "Administrator")]
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([Required] int id)

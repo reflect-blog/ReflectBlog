@@ -1,4 +1,5 @@
-﻿using ReflectBlog.Data;
+﻿
+using ReflectBlog.Data;
 using ReflectBlog.Entities;
 using ReflectBlog.Helpers;
 using ReflectBlog.Models;
@@ -29,10 +30,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Login User Endpoint
         /// </summary>
-        /// <param name="userLogin"></param>
-        /// <returns></returns>
+        /// <param name="userLogin">Login model containing username and password parameters</param>
+        /// <returns>User Token</returns>
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody] UserLogin userLogin)
@@ -49,10 +50,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to generate jwt token for given user
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        /// <param name="user">User date based on which the token will be created</param>
+        /// <returns>Generated Token</returns>
         private string Generate(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -78,10 +79,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Authenticate user method
         /// </summary>
-        /// <param name="userLogin"></param>
-        /// <returns></returns>
+        /// <param name="userLogin">Login model containing username and password parameters</param>
+        /// <returns>Current user if exists and provided correct credentials</returns>
         private User Authenticate(UserLogin userLogin)
         {
 

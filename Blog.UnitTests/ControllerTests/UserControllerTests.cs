@@ -12,6 +12,7 @@ using Xunit;
 using System.Net;
 using ReflectBlog.Models;
 
+
 namespace Blog.UnitTests.ControllerTests
 {
     public class UserControllerTests
@@ -34,6 +35,7 @@ namespace Blog.UnitTests.ControllerTests
 
         }
 
+        // Using Theory for test methods with parameters and passing values using inline data
         [Theory]
         [InlineData("A")]
         [InlineData("B")]
@@ -43,25 +45,7 @@ namespace Blog.UnitTests.ControllerTests
         {
             // Arrange
             // We prepare the data that we will need to act on the test
-            var user = await dbContext.Users.FirstOrDefaultAsync();
-
-            var claims = new List<Claim>()
-                {
-                    new Claim("UserId", user.Id.ToString()),
-                    new Claim("UserName", user.Username.ToString()),
-                    new Claim("Email", user.Email.ToString()),
-                    new Claim("GivenName", user.GivenName.ToString()),
-                    new Claim("FamilyName", user.FamilyName.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString()),
-                };
-
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
             var userController = new UserController(dbContext);
-            userController.ControllerContext = new ControllerContext();
-            userController.ControllerContext.HttpContext = new DefaultHttpContext();
-            userController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             dbContext.Users.AddRange(new List<User>
             {
@@ -137,25 +121,7 @@ namespace Blog.UnitTests.ControllerTests
         {
             // Arrange
             // We prepare the data that we will need to act on the test
-            var user = await dbContext.Users.FirstOrDefaultAsync();
-
-            var claims = new List<Claim>()
-                {
-                    new Claim("UserId", user.Id.ToString()),
-                    new Claim("UserName", user.Username.ToString()),
-                    new Claim("Email", user.Email.ToString()),
-                    new Claim("GivenName", user.GivenName.ToString()),
-                    new Claim("FamilyName", user.FamilyName.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString()),
-                };
-
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
             var userController = new UserController(dbContext);
-            userController.ControllerContext = new ControllerContext();
-            userController.ControllerContext.HttpContext = new DefaultHttpContext();
-            userController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             // Act
 
@@ -199,6 +165,10 @@ namespace Blog.UnitTests.ControllerTests
             Assert.NotNull(actualUser);
             Assert.Equal(expectedUser.Id, actualUser.Id);
             Assert.Equal(expectedUser.Email, actualUser.Email);
+            Assert.Equal(expectedUser.Username, actualUser.Username);
+            Assert.Equal(expectedUser.Password, actualUser.Password);
+            Assert.Equal(expectedUser.GivenName, actualUser.GivenName);
+            Assert.Equal(expectedUser.FamilyName, actualUser.GivenName);
         }
 
         [Fact]
@@ -226,25 +196,7 @@ namespace Blog.UnitTests.ControllerTests
         {
             // Arrange
             // We prepare the data that we will need to act on the test
-            var user = await dbContext.Users.FirstOrDefaultAsync();
-
-            var claims = new List<Claim>()
-                {
-                    new Claim("UserId", user.Id.ToString()),
-                    new Claim("UserName", user.Username.ToString()),
-                    new Claim("Email", user.Email.ToString()),
-                    new Claim("GivenName", user.GivenName.ToString()),
-                    new Claim("FamilyName", user.FamilyName.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString()),
-                };
-
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
             var userController = new UserController(dbContext);
-            userController.ControllerContext = new ControllerContext();
-            userController.ControllerContext.HttpContext = new DefaultHttpContext();
-            userController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             var userToCreate = new UserModel
             {
@@ -286,8 +238,6 @@ namespace Blog.UnitTests.ControllerTests
             // Arrange
 
             var userController = new UserController(dbContext);
-            userController.ControllerContext = new ControllerContext();
-            userController.ControllerContext.HttpContext = new DefaultHttpContext();
 
             // Act
             var result = await userController.PostUser(new UserModel
@@ -310,8 +260,6 @@ namespace Blog.UnitTests.ControllerTests
             // Arrange
 
             var userController = new UserController(dbContext);
-            userController.ControllerContext = new ControllerContext();
-            userController.ControllerContext.HttpContext = new DefaultHttpContext();
 
             // Act
 
@@ -328,6 +276,7 @@ namespace Blog.UnitTests.ControllerTests
         public async Task DeleteUser_ExistingUse_ShouldDeleteSuccessfully()
         {
             // Arrange
+            var userController = new UserController(dbContext);
 
             var user = await dbContext.Users.FirstOrDefaultAsync();
 
@@ -344,7 +293,6 @@ namespace Blog.UnitTests.ControllerTests
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            var userController = new UserController(dbContext);
             userController.ControllerContext = new ControllerContext();
             userController.ControllerContext.HttpContext = new DefaultHttpContext();
             userController.ControllerContext.HttpContext.User = claimsPrincipal;
@@ -366,6 +314,7 @@ namespace Blog.UnitTests.ControllerTests
         public async Task DeleteUser_NonExistingId_ShouldReturnNotFound()
         {
             // Arrange
+            var userController = new UserController(dbContext);
 
             var id = await dbContext.Users.MaxAsync(x => x.Id);
 
@@ -384,10 +333,9 @@ namespace Blog.UnitTests.ControllerTests
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            var userController = new UserController(dbContext);
             userController.ControllerContext = new ControllerContext();
             userController.ControllerContext.HttpContext = new DefaultHttpContext();
-            userController.ControllerContext.HttpContext.User = claimsPrincipal; ;
+            userController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             // Act
 
@@ -397,5 +345,95 @@ namespace Blog.UnitTests.ControllerTests
             // Assert
             Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }
+
+        [Fact]
+        public async Task UpdateUser_ValidUserModel_ShouldReturnCreated()
+        {
+            // Arrange
+            // We prepare the data that we will need to act on the test
+            var userController = new UserController(dbContext);
+
+            var id = await dbContext.Users.MaxAsync(x => x.Id);
+
+            var user = await dbContext.Users.FirstOrDefaultAsync();
+
+            var claims = new List<Claim>()
+                {
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserName", user.Username.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                    new Claim("GivenName", user.GivenName.ToString()),
+                    new Claim("FamilyName", user.FamilyName.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            userController.ControllerContext = new ControllerContext();
+            userController.ControllerContext.HttpContext = new DefaultHttpContext();
+            userController.ControllerContext.HttpContext.User = claimsPrincipal;
+
+            var userToUpdate = await dbContext.Users.FirstOrDefaultAsync();
+
+            userToUpdate.GivenName = "Edona";
+            userToUpdate.FamilyName = "Haziri";
+
+            // Act
+
+            var response = await userController.UpdateUser(userToUpdate);
+            var okResult = response as ObjectResult;
+
+            // Assert
+
+            Assert.NotNull(okResult);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+            //Assert.Equal((int)HttpStatusCode.Created, okResult.StatusCode);
+
+            var actualUser = okResult.Value as User;
+            Assert.NotNull(actualUser);
+
+            Assert.Equal(userToUpdate.GivenName, actualUser.GivenName);
+            Assert.Equal(userToUpdate.FamilyName, actualUser.FamilyName);
+        }
+
+        [Fact]
+        public async Task UpdateUser_NullParameter_ShouldReturnBadRequest()
+        { 
+            // Arrange
+            // We prepare the data that we will need to act on the test
+            var userController = new UserController(dbContext);
+
+            var id = await dbContext.Users.MaxAsync(x => x.Id);
+
+            var user = await dbContext.Users.FirstOrDefaultAsync();
+
+            var claims = new List<Claim>()
+                {
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserName", user.Username.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                    new Claim("GivenName", user.GivenName.ToString()),
+                    new Claim("FamilyName", user.FamilyName.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            userController.ControllerContext = new ControllerContext();
+            userController.ControllerContext.HttpContext = new DefaultHttpContext();
+            userController.ControllerContext.HttpContext.User = claimsPrincipal;
+
+            // Act
+            var result = await userController.UpdateUser(null);
+            var objectRes = result as BadRequestResult;
+
+            // Assert
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectRes.StatusCode);
+            //Assert.Null(objectRes.Value);
+        }
+
     }
 }

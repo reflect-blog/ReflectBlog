@@ -28,12 +28,12 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to get paginated data for users
         /// </summary>
-        /// <param name="search"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        /// <param name="search">Search keyword</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <returns>Users Paginated</returns>
         [HttpGet("GetUsers")]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
@@ -45,7 +45,7 @@ namespace ReflectBlog.Controllers
                                                    .Skip((page - 1) * pageSize).Take(pageSize)
                                                    .ToListAsync();
 
-            var UsersPaged = new PagedInfo<User>
+            var usersPaged = new PagedInfo<User>
             {
                 Data = users,
                 TotalCount = await _dbContext.Users.CountAsync(),
@@ -53,14 +53,14 @@ namespace ReflectBlog.Controllers
                 Page = page
             };
 
-            return Ok(UsersPaged);
+            return Ok(usersPaged);
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to get user by id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Id of user to get</param>
+        /// <returns>User if found</returns>
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser([Required] int id)
         {
@@ -73,10 +73,10 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Endpoint to create a new user
         /// </summary>
-        /// <param name="userModel"></param>
-        /// <returns></returns>
+        /// <param name="userModel">Model with parameters required to create an user</param>
+        /// <returns>Newly created user</returns>
         [AllowAnonymous]
         [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser(UserModel userModel)
@@ -111,13 +111,14 @@ namespace ReflectBlog.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Method to update an user 
         /// </summary>
-        /// <param name="userModel"></param>
-        /// <returns></returns>
+        /// <param name="userModel">Model with parameters required to update an user</param>
+        /// <returns>Updated User</returns>
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(User userModel) 
         {
+            try { 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var currentUser = HelperMethods.GetCurrentUser(identity);
 
@@ -127,14 +128,21 @@ namespace ReflectBlog.Controllers
             var userToUpdate = _dbContext.Update(userModel);
             await _dbContext.SaveChangesAsync();
 
-            return Ok(userToUpdate.Entity);
+                return Ok(userToUpdate.Entity);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+             
         }
 
         /// <summary>
-        /// 
+        /// Method to delete a user based on id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Id of user to be deleted</param>
+        /// <returns>Deleted confirmation</returns>
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser([Required] int id)
         {
@@ -154,40 +162,45 @@ namespace ReflectBlog.Controllers
             return Ok("Deleted User!");
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Admins")]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult AdminsEndpoint()
+        [HttpGet("AdminsAndEditors")]
+        [Authorize(Roles = "Administrator,Editor")]
+        public IActionResult AdminsAndEditorsEndpoint()
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var currentUser = HelperMethods.GetCurrentUser(identity);
+            var currentUser = GetCurrentUser();
 
             return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
         }
 
-        [HttpGet("Authors")]
-        [Authorize(Roles = "Author")]
-        public IActionResult AuthorsEndpoint()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var currentUser = HelperMethods.GetCurrentUser(identity);
 
-            return Ok($"Hi {currentUser.GivenName}, you are a {currentUser.Role}");
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                int.TryParse(userClaims.FirstOrDefault(o => o.Type == "UserId")?.Value, out int userId);
+
+                return new User
+                {
+                    Id = userId,
+                    Username = userClaims.FirstOrDefault(o => o.Type == "UserName")?.Value,
+                    Email = userClaims.FirstOrDefault(o => o.Type == "Email")?.Value,
+                    GivenName = userClaims.FirstOrDefault(o => o.Type == "GivenName")?.Value,
+                    FamilyName = userClaims.FirstOrDefault(o => o.Type == "FamilyName")?.Value,
+                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                };
+            }
+            return null;
         }
-
-        [HttpGet("AdminsAndAuthors")]
-        [Authorize(Roles = "Administrator,Author")]
-        public IActionResult AdminsAndAuthorsEndpoint()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var currentUser = HelperMethods.GetCurrentUser(identity);
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
-        }
-
 
     }
 }
