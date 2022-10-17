@@ -65,11 +65,11 @@ app.MapControllers();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGet("/", async context =>
-    {
-        context.Response.Redirect("/swagger", permanent: false);
-        await Task.CompletedTask;
-    });
+    //endpoints.MapGet("/", async context =>
+    //{
+    //    context.Response.Redirect("/swagger", permanent: false);
+    //    await Task.CompletedTask;
+    //});
     endpoints.MapControllers();
     //endpoints.MapRazorPages();
 });
