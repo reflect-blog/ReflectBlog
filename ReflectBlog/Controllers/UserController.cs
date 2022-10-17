@@ -83,9 +83,6 @@ namespace ReflectBlog.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                var currentUser = HelperMethods.GetCurrentUser(identity);
-
                 var user = new User
                 {
                     Username = userModel.Username,

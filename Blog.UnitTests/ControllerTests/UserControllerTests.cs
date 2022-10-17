@@ -151,7 +151,25 @@ namespace Blog.UnitTests.ControllerTests
             // Arrange
 
             var expectedUser = await dbContext.Users.FirstOrDefaultAsync();
+
             var userController = new UserController(dbContext);
+
+            var claims = new List<Claim>()
+                {
+                    new Claim("UserId", expectedUser.Id.ToString()),
+                    new Claim("UserName", expectedUser.Username.ToString()),
+                    new Claim("Email", expectedUser.Email.ToString()),
+                    new Claim("GivenName", expectedUser.GivenName.ToString()),
+                    new Claim("FamilyName", expectedUser.FamilyName.ToString()),
+                    new Claim(ClaimTypes.Role, expectedUser.Role.ToString()),
+                };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            userController.ControllerContext = new ControllerContext();
+            userController.ControllerContext.HttpContext = new DefaultHttpContext();
+            userController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             // Act
 
@@ -168,7 +186,7 @@ namespace Blog.UnitTests.ControllerTests
             Assert.Equal(expectedUser.Username, actualUser.Username);
             Assert.Equal(expectedUser.Password, actualUser.Password);
             Assert.Equal(expectedUser.GivenName, actualUser.GivenName);
-            Assert.Equal(expectedUser.FamilyName, actualUser.GivenName);
+            Assert.Equal(expectedUser.FamilyName, actualUser.FamilyName);
         }
 
         [Fact]

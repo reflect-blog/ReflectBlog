@@ -316,8 +316,25 @@ namespace Blog.UnitTests.ControllerTests
             var article = dbContext.Articles.FirstOrDefaultAsync();
 
             var articleController = new ArticleController(dbContext);
+
+            var user = await dbContext.Users.FirstOrDefaultAsync();
+
+            var claims = new List<Claim>()
+                {
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserName", user.Username.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                    new Claim("GivenName", user.GivenName.ToString()),
+                    new Claim("FamilyName", user.FamilyName.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
             articleController.ControllerContext = new ControllerContext();
             articleController.ControllerContext.HttpContext = new DefaultHttpContext();
+            articleController.ControllerContext.HttpContext.User = claimsPrincipal;
 
             // Act
 
