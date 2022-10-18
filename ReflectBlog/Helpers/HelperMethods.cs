@@ -35,7 +35,7 @@ namespace ReflectBlog.Helpers
             }
 
             var httpclient = new HttpClient();
-            httpclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID", "c88b8634c974be4");
+            httpclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID", "a65e2cd7035148f");
             httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/plain");
             var response = await httpclient.PostAsync("https://api.imgur.com/3/image", new StringContent(base64Image));
             var stringcontent = await response.Content.ReadAsStringAsync();
