@@ -19,7 +19,7 @@ namespace ReflectBlog.Controllers
 {
     [ApiController]
     [Produces("application/json", "application/problem+json")]
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     public class ArticleController : ControllerBase
     {
@@ -38,7 +38,7 @@ namespace ReflectBlog.Controllers
         /// <param name="page">page number</param>
         /// <param name="pageSize">number of items per page</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         [HttpGet("GetArticles")]
         public async Task<IActionResult> GetArticles(string search, int page = 1, int pageSize = 10)
         {
@@ -64,7 +64,31 @@ namespace ReflectBlog.Controllers
             };
 
             return Ok(articlesPaged);
+        }*/
+
+
+        [HttpGet("GetArticles")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetArticles(string search)
+        {
+            Expression<Func<Article, bool>> searchCondition = x =>
+                                            x.Title.Contains(search) ||
+                                            x.Content.Contains(search) ||
+                                            x.User.GivenName.Contains(search) ||
+                                            x.User.FamilyName.Contains(search);
+
+            var articles = await _dbContext.Articles.Include(x => x.Category).Include(x => x.User)
+                                                    .WhereIf(!string.IsNullOrEmpty(search), searchCondition)
+                                                    .ToListAsync();
+
+
+
+
+
+
+            return Ok(articles);
         }
+
 
         [AllowAnonymous]
         [HttpGet("GetArticlesList")]
@@ -135,7 +159,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="articleModel">Model with required parameters to create an Article</param>
         /// <returns>Newly created Article</returns>
-        [Authorize(Roles = "Administrator,Author")]
+        //[Authorize(Roles = "Administrator,Author")]
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
         {
@@ -170,7 +194,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="articleModel">Model with required parameters to update an Article</param>
         /// <returns>Updated Article</returns>
-        [Authorize(Roles = "Administrator,Author")]
+        //[Authorize(Roles = "Administrator,Author")]
         [HttpPut("UpdateArticle")]
         public async Task<IActionResult> UpdateArticle(Article articleModel)
         {
@@ -191,7 +215,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="id">Id of article to be deleted</param>
         /// <returns>Deleted Confirmation</returns>
-        [Authorize(Roles = "Administrator,Author")]
+        //[Authorize(Roles = "Administrator,Author")]
         [HttpDelete("DeleteArticle/{id}")]
         public async Task<IActionResult> DeleteArticle([FromRoute] int id)
         {
@@ -217,7 +241,8 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="image">Image to upload</param>
         /// <returns>Uploaded image link</returns>
-        [Authorize(Roles = "Administrator,Author")]
+        //[Authorize(Roles = "Administrator,Author")]
+        [AllowAnonymous]
         [HttpPost("UploadImage")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {

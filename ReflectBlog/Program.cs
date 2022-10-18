@@ -21,6 +21,17 @@ ConfigurationManager configuration = builder.Configuration;
 var connString = configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(connString));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactDomain",
+        policy => policy.WithOrigins("http://http://20.76.132.225")
+            .AllowAnyHeader()
+            .AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+    );
+});
+
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -49,10 +60,13 @@ var app = builder.Build();
 //{
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseDeveloperExceptionPage();
+//app.UseDeveloperExceptionPage();
 //}
 
 //app.UseHttpsRedirection();
+
+app.UseCors("ReactDomain");
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -62,6 +76,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.UseEndpoints(endpoints =>
 {

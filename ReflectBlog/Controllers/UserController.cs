@@ -17,7 +17,7 @@ namespace ReflectBlog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly BlogDbContext _dbContext;
@@ -34,8 +34,9 @@ namespace ReflectBlog.Controllers
         /// <param name="page">Page Number</param>
         /// <param name="pageSize">Page Size</param>
         /// <returns>Users Paginated</returns>
+        
         [HttpGet("GetUsers")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUsers(string search, int page = 1, int pageSize = 10)
         {
             Expression<Func<User, bool>> searchCondition = x => x.GivenName.Contains(search) || x.FamilyName.Contains(search) || x.Email.Contains(search);

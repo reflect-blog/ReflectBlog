@@ -17,7 +17,7 @@ namespace ReflectBlog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class LoginController : ControllerBase
     {
         private IConfiguration _config;

@@ -15,7 +15,7 @@ namespace ReflectBlog.Controllers
 {
     [ApiController]
     [Produces("application/json", "application/problem+json")]
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
@@ -87,7 +87,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="categoryModel">Model with required parameters for creating a new category</param>
         /// <returns>Newly created category</returns>
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [HttpPost("PostCategory")]
         public async Task<IActionResult> PostCategory(CategoryModel categoryModel)
         {
@@ -114,7 +114,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="categoryModel">Model with required parameters for updatng a category</param>
         /// <returns>Newly updated category</returns>
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [HttpPut("UpdateCategory")]
         public async Task<IActionResult> UpdateCategory(Category categoryModel)
         {
@@ -129,7 +129,7 @@ namespace ReflectBlog.Controllers
         /// </summary>
         /// <param name="id">Id of category to be deleted</param>
         /// <returns>Delete confirmation</returns>
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([Required] int id)
         {
