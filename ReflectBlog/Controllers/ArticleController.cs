@@ -163,8 +163,8 @@ namespace ReflectBlog.Controllers
         [HttpPost("PostArticle")]
         public async Task<IActionResult> PostArticle(ArticleModel articleModel)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var currentUser = HelperMethods.GetCurrentUser(identity);
+            //var identity = HttpContext.User.Identity as ClaimsIdentity;
+            //var currentUser = HelperMethods.GetCurrentUser(identity);
 
             try
             {
@@ -173,7 +173,7 @@ namespace ReflectBlog.Controllers
                     Title = articleModel.Title,
                     Content = articleModel.Content,
                     Date = articleModel.Date,
-                    AuthorId = currentUser.Id,
+                    AuthorId = articleModel.AuthorId,
                     CategoryId = articleModel.CategoryId,
                     ImageUrl = articleModel.Image
                 };
